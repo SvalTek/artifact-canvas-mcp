@@ -38,6 +38,10 @@ export const handler: Handlers = {
           }),
         );
       },
+    ).catch((error) =>
+      Response.json({
+        error: error instanceof Error ? error.message : "Invalid artifact.",
+      }, { status: 400 })
     );
   },
   DELETE(_request, context) {

@@ -1,4 +1,16 @@
-export const ARTIFACT_TYPES = ["markdown", "text", "html", "code"] as const;
+import {
+  applyUIChange,
+  parseUISpec,
+  type UIChange,
+  type UIState,
+} from "./a2ui.ts";
+export const ARTIFACT_TYPES = [
+  "markdown",
+  "text",
+  "html",
+  "code",
+  "interactive",
+] as const;
 
 export type ArtifactType = typeof ARTIFACT_TYPES[number];
 
@@ -14,6 +26,7 @@ export interface Artifact {
   type: ArtifactType;
   language?: string;
   updatedAt: string;
+  ui?: UIState;
 }
 
 const artifacts = new Map<string, Artifact>();
@@ -40,13 +53,60 @@ export function saveArtifact(
 ) {
   const id = input.id ?? crypto.randomUUID();
   const previous = artifacts.get(id);
+  const type = input.type ?? previous?.type ?? "markdown";
+  if (type === "interactive") parseUISpec(input.content);
   const artifact: Artifact = {
     id,
     title: input.title,
     content: input.content,
-    type: input.type ?? previous?.type ?? "markdown",
+    type,
     language: input.language ?? previous?.language,
     updatedAt: new Date().toISOString(),
+    ...(type === "interactive"
+      ? { ui: { epoch: crypto.randomUUID(), revision: 0, changes: [] } }
+      : {}),
+  };
+  artifacts.set(id, artifact);
+  for (const listener of listeners) {
+    try {
+      listener(artifact);
+    } catch (error) {
+      writeLog("error", "artifact:listener", errorMessage(error));
+    }
+  }
+  return artifact;
+}
+
+export function updateInteractive(
+  id: string,
+  change: Omit<UIChange, "revision">,
+  expectedRevision?: number,
+) {
+  const previous = getArtifact(id);
+  if (!previous || previous.type !== "interactive" || !previous.ui) {
+    throw new Error("Expected an existing interactive artifact.");
+  }
+  if (
+    expectedRevision !== undefined && previous.ui.revision !== expectedRevision
+  ) {
+    throw new Error(
+      `Revision conflict: current revision is ${previous.ui.revision}.`,
+    );
+  }
+  const spec = applyUIChange(parseUISpec(previous.content), change);
+  const revision = previous.ui.revision + 1;
+  const artifact: Artifact = {
+    ...previous,
+    content: JSON.stringify(spec),
+    updatedAt: new Date().toISOString(),
+    ui: {
+      epoch: previous.ui.epoch,
+      revision,
+      changes: [...previous.ui.changes, {
+        ...structuredClone(change),
+        revision,
+      }].slice(-100),
+    },
   };
   artifacts.set(id, artifact);
   for (const listener of listeners) {

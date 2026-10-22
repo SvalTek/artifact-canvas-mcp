@@ -1,4 +1,4 @@
-import { subscribe } from "../lib/artifacts.ts";
+import { listArtifacts, subscribe } from "../lib/artifacts.ts";
 
 export const handler = {
   GET() {
@@ -7,6 +7,11 @@ export const handler = {
       start(controller) {
         const encoder = new TextEncoder();
         controller.enqueue(encoder.encode(": canvas connected\n\n"));
+        controller.enqueue(
+          encoder.encode(
+            `event: snapshot\ndata: ${JSON.stringify(listArtifacts())}\n\n`,
+          ),
+        );
         const unsubscribe = subscribe((artifact) => {
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify(artifact)}\n\n`),

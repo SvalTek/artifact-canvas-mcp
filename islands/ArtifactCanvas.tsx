@@ -1,6 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import type { Artifact } from "../lib/artifacts.ts";
 import ArtifactContent from "../components/ArtifactContent.tsx";
+import InteractiveContent from "../components/InteractiveContent.tsx";
 
 export default function ArtifactCanvas(props: { initial: Artifact[] }) {
   const [items, setItems] = useState(props.initial);
@@ -24,6 +25,10 @@ export default function ArtifactCanvas(props: { initial: Artifact[] }) {
       });
       if (updated.title) setSelectedId(updated.id);
     };
+    events.addEventListener(
+      "snapshot",
+      (event) => setItems(JSON.parse(event.data)),
+    );
     return () => events.close();
   }, []);
 
@@ -77,8 +82,23 @@ export default function ArtifactCanvas(props: { initial: Artifact[] }) {
               </nav>
             )}
         </aside>
-        <section class="stage">
-          {selected
+        <section
+          class={`stage ${
+            selected?.type === "interactive" ? "stage-interactive" : ""
+          }`}
+        >
+          {items.filter((item) => item.type === "interactive").map((item) => (
+            <div
+              key={item.id}
+              class="interactive-pane"
+              hidden={item.id !== selectedId}
+            >
+              <InteractiveContent artifact={item} />
+            </div>
+          ))}
+          {selected?.type === "interactive"
+            ? null
+            : selected
             ? (
               <article class="artifact-card">
                 <div class="card-meta">

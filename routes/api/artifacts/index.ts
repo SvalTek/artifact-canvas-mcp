@@ -33,6 +33,10 @@ export const handler = {
           },
         );
       },
+    ).catch((error) =>
+      Response.json({
+        error: error instanceof Error ? error.message : "Invalid artifact.",
+      }, { status: 400 })
     );
   },
 };

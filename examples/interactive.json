@@ -1,0 +1,84 @@
+{
+  "components": [
+    {
+      "id": "root",
+      "component": "Column",
+      "children": [
+        "title",
+        "intro",
+        "name",
+        "quantity",
+        "count",
+        "increment",
+        "submit"
+      ]
+    },
+    {
+      "id": "title",
+      "component": "Text",
+      "text": "Interactive canvas",
+      "variant": "h1"
+    },
+    {
+      "id": "intro",
+      "component": "Text",
+      "text": "Edit the controls and increment the counter locally. Only Send response emits an event."
+    },
+    {
+      "id": "name",
+      "component": "TextField",
+      "label": "Name",
+      "value": { "path": "/name" }
+    },
+    {
+      "id": "quantity",
+      "component": "Slider",
+      "label": "Quantity",
+      "value": { "path": "/quantity" },
+      "min": 1,
+      "max": 10
+    },
+    {
+      "id": "count",
+      "component": "Text",
+      "text": {
+        "call": "formatString",
+        "args": { "value": "Local counter: ${/count}" }
+      }
+    },
+    {
+      "id": "increment",
+      "component": "Button",
+      "child": "incrementLabel",
+      "action": {
+        "functionCall": {
+          "call": "increment",
+          "args": { "target": "/count", "amount": 1 }
+        }
+      }
+    },
+    {
+      "id": "incrementLabel",
+      "component": "Text",
+      "text": "Increment locally"
+    },
+    {
+      "id": "submit",
+      "component": "Button",
+      "variant": "primary",
+      "child": "submitLabel",
+      "action": {
+        "event": {
+          "name": "response",
+          "context": {
+            "name": { "path": "/name" },
+            "quantity": { "path": "/quantity" },
+            "count": { "path": "/count" }
+          }
+        }
+      }
+    },
+    { "id": "submitLabel", "component": "Text", "text": "Send response" }
+  ],
+  "data": { "name": "", "quantity": 3, "count": 0 }
+}

@@ -1,6 +1,7 @@
 {
   "lock": false,
   "tasks": {
+    "test": "deno test -A lib/",
     "check": "deno fmt --check && deno lint && deno check main.ts dev.ts fresh.config.ts fresh.gen.ts web.ts routes/_app.tsx routes/_404.tsx routes/mcp.ts routes/index.tsx routes/greet/[name].tsx routes/events.ts routes/api/joke.ts routes/api/artifacts/index.ts routes/api/artifacts/[id].ts islands/Counter.tsx islands/ArtifactCanvas.tsx components/Button.tsx components/ArtifactContent.tsx lib/artifacts.ts lib/artifacts_test.ts lib/markdown.ts lib/markdown_test.ts lib/mcp_guidance.ts",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
     "manifest": "deno task cli manifest $(pwd)",
@@ -22,6 +23,10 @@
     "**/_fresh/*"
   ],
   "imports": {
+    "@a2ui/lit/v0_9": "npm:@a2ui/lit@0.14.0/v0_9",
+    "@a2ui/web_core/v0_9": "npm:@a2ui/web_core@0.14.0/v0_9",
+    "@a2ui/web_core/catalog": "npm:@a2ui/web_core@0.14.0/catalog",
+    "zod3": "npm:zod@3.25.76",
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",

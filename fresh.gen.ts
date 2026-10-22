@@ -5,6 +5,7 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $api_artifacts_id_ from "./routes/api/artifacts/[id].ts";
+import * as $api_artifacts_id_events from "./routes/api/artifacts/[id]/events.ts";
 import * as $api_artifacts_index from "./routes/api/artifacts/index.ts";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $events from "./routes/events.ts";
@@ -20,6 +21,7 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/api/artifacts/[id].ts": $api_artifacts_id_,
+    "./routes/api/artifacts/[id]/events.ts": $api_artifacts_id_events,
     "./routes/api/artifacts/index.ts": $api_artifacts_index,
     "./routes/api/joke.ts": $api_joke,
     "./routes/events.ts": $events,

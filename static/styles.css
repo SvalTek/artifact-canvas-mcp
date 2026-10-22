@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+.stage.stage-interactive {
+  padding: 0;
+  display: block;
+  min-width: 0;
+}
+.interactive-pane {
+  width: 100%;
+  min-height: calc(100vh - 50px);
+  color: var(--text);
+  --a2ui-color-on-surface: var(--text);
+  --a2ui-color-surface: var(--panel);
+  --a2ui-color-primary: var(--link);
+}
+.interactive-pane[hidden] {
+  display: none;
+}
+.interactive-content,
+.interactive-content > a2ui-surface {
+  display: block;
+  width: 100%;
+  min-height: inherit;
+}
+.interactive-error {
+  padding: 12px 20px;
+  color: var(--text);
+}
+.interactive-pane .a2ui-slider-container {
+  width: auto;
+}
+
 :root {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   color: #20251f;
